@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "如使用本软件开展研究，请引用本条目，并同时引用实际使用的统计方法及方法包。"
+type: software
+title: "心理学统计 Agent (Psychology Statistics Agent)"
+authors:
+  - name: "awardtome"
+version: "0.8.0"
+date-released: "2026-10-15"
+url: "https://github.com/awardtome/psychology-statistics-agent"
+repository-code: "https://github.com/awardtome/psychology-statistics-agent"
+license: MIT
+abstract: "面向心理学研究的中文桌面统计与科研构思工作台，支持问卷筛选、元分析、中介调节、异质性、网络、DAG、干预方案、机器学习和自定义 AI API。"
+keywords:
+  - psychology
+  - meta-analysis
+  - questionnaire
+  - network-analysis
+  - research-ideation
