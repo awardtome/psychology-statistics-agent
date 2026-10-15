@@ -1,0 +1,19 @@
+q_ml <- function(q,s,output){
+  target<-s$target;features<-as.character(vec(s$features));need(!target%in%features,"目标不能作为特征。")
+  for(scale in q$config$scales)if(scale$name==target)need(!any(as.character(vec(scale$items))%in%features),"构成目标总分的题项会造成目标泄漏。")
+  task<-s$task;need(task%in%c("regression","classification"),"请选择回归或分类。");group<-pv(s,"group","");z<-q_data(q,c(features,target),numeric=FALSE,extras=if(nzchar(group))group else character());d<-z$data;need(length(features)>0,"请指定预测时可获得的特征。")
+  if(task=="regression")need(is.numeric(d[[target]]),"回归目标应为数值。")else{d[[target]]<-factor(d[[target]]);need(nlevels(d[[target]])>=2&&nlevels(d[[target]])<=10,"分类目标应为 2 到 10 类。");need(min(table(d[[target]]))>=10,"每个目标类别至少 10 个案例。")}
+  fraction<-pv(s,"testFraction",.2);need(fraction>=.1&&fraction<=.4,"测试比例为 0.1 到 0.4。");set.seed(as.integer(pv(s,"seed",20261003)))
+  if(nzchar(group)){units<-unique(d[[group]]);need(length(units)>=10,"分组划分至少 10 个独立组。");held<-sample(units,max(2,round(length(units)*fraction)));test<-which(d[[group]]%in%held)}else if(task=="classification")test<-sort(vec(lapply(split(seq_len(nrow(d)),d[[target]]),function(i)sample(i,max(1,round(length(i)*fraction))))))else test<-sample(nrow(d),max(5,round(nrow(d)*fraction)))
+  train<-setdiff(seq_len(nrow(d)),test);need(length(test)>=5&&length(train)>=20,"训练或测试样本不足。");x<-d[features]
+  for(n in names(x))if(!is.numeric(x[[n]]))x[[n]]<-factor(x[[n]],levels=unique(x[[n]][train]))
+  need(!anyNA(x[test,,drop=FALSE]),"测试集有训练集未见的分类特征水平，请调整编码。");y<-d[[target]]
+  need(task!="classification"||all(levels(y)%in%unique(as.character(y[train]))),"训练集缺少目标类别。")
+  model<-pv(s,"model","forest");need(model%in%c("forest","linear"),"请选择森林或线性/逻辑基线。")
+  if(model=="forest"){fit<-ranger::ranger(x=x[train,,drop=FALSE],y=y[train],num.trees=300,importance="permutation",probability=task=="classification",seed=20261003,num.threads=2);pred<-predict(fit,data=x[test,,drop=FALSE])$predictions;importance<-data.frame(feature=names(fit$variable.importance),importance=as.numeric(fit$variable.importance));validation<-list(type="训练集 OOB",error=fit$prediction.error,note="固定参数，未用测试集调参；聚类数据 OOB 不保证组间独立。")}
+  else{dx<-x;names(dx)<-paste0("v",seq_along(features));dx$target<-y;if(task=="regression")fit<-lm(target~.,dx[train,,drop=FALSE])else{need(nlevels(y)==2,"逻辑基线支持二分类；多分类选森林。");fit<-glm(target~.,dx[train,,drop=FALSE],family=binomial())};pred<-predict(fit,newdata=dx[test,,drop=FALSE],type="response");importance<-data.frame(feature=names(coef(fit)),importance=as.numeric(coef(fit)));validation<-list(type="固定基线",note="无调参，以保留测试集评估。")}
+  if(task=="regression"){truth<-y[test];metrics<-list(RMSE=sqrt(mean((truth-pred)^2)),MAE=mean(abs(truth-pred)),R2=1-sum((truth-pred)^2)/sum((truth-mean(truth))^2));prediction<-data.frame(source_record=z$records[test],observed=truth,predicted=as.numeric(pred))}
+  else{classes<-if(model=="forest")colnames(pred)[max.col(pred)]else ifelse(pred>=.5,levels(y)[2],levels(y)[1]);cm<-table(observed=factor(y[test],levels=levels(y)),predicted=factor(classes,levels=levels(y)));metrics<-list(accuracy=sum(diag(cm))/sum(cm),balanced_accuracy=mean(diag(cm)/rowSums(cm)),confusion=as.data.frame(cm));prediction<-data.frame(source_record=z$records[test],observed=y[test],predicted=classes)}
+  file<-file.path(output,"ml.png");grDevices::png(file,width=1300,height=900,res=120);tryCatch(barplot(head(importance$importance,15),names.arg=head(importance$feature,15),las=2,main="Training importance / coefficients"),finally=grDevices::dev.off())
+  list(summary=list(method=paste("机器学习",model,task),n=z$n,complete_case_excluded=z$removed,training_n=length(train),test_n=length(test),group_split=group,metrics=metrics,importance=importance,validation=validation,limitations=c("只报告保留测试集表现；正式研究需要重复或外部验证。","缺失按完整案例排除，未在整表上填补、标准化或调参。","重要性与预测不证明因果，使用者须确认特征的预测时可获得性。")),fit=fit,image=file,predictions=prediction)
+}

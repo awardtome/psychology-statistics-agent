@@ -1,0 +1,65 @@
+{
+  "name": "psychology-statistics-agent",
+  "version": "0.8.0",
+  "description": "Installable psychology statistics agent with questionnaire and meta-analysis workspaces",
+  "author": "awardtome",
+  "license": "MIT",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "build": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "io.awardtome.psychology-statistics-agent",
+    "productName": "Psychology Statistics Agent",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "*.cjs",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "runtime",
+        "to": "runtime",
+        "filter": [
+          "**/*",
+          "!R/library/*/include/**/*",
+          "!R/library/*/doc/**/*",
+          "!R/library/*/html/**/*",
+          "!R/library/*/help/**/*",
+          "!R/library/*/demo/**/*",
+          "!R/library/*/tests/**/*",
+          "!R/library/*/tinytest/**/*"
+        ]
+      },
+      {
+        "from": "backend",
+        "to": "backend"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "心理学统计agent",
+      "artifactName": "Psychology-Statistics-Agent-${version}-Setup.${ext}"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const {ComputeWorker} = require('../core.cjs');
+const base = path.resolve(__dirname, '..');
+const resources = process.argv.includes('--bundled') ? path.join(base, 'dist/win-unpacked/resources') : base;
+const worker = new ComputeWorker(path.join(resources, 'runtime/R'), path.join(resources, 'backend'));
+const output = path.join(base, 'test-artifacts/refactor-report');
+
+(async () => {
+  await worker.ready;
+  const raw = await worker.call('q_demo');
+  const config = {scales: [{name: 'Score', items: ['Q1','Q2','Q3'], reverse: ['Q2'], min: 1, max: 5}],
+    rules: [{type: 'range', columns: ['Duration'], min: 120}]};
+  assert.equal((await worker.call('q_screen', {config})).rows, 237);
+  const skipped = await worker.call('q_screen', {skip: true});
+  assert.equal(skipped.rows, 240); assert.equal(skipped.screening, 'skipped');
+  assert.deepEqual(skipped.preview, raw.preview);
+  assert.equal(skipped.columns.some(c => c.column === 'Score'), false);
+  await worker.call('q_screen', {config});
+  await worker.call('q_demo');
+  await worker.call('q_branch', {mode: 'all'});
+  const dagSpec = {variables: ['X','M','Y','W'], algorithm: 'hc'};
+  const dag = await worker.call('q_run', {module: 'dag', spec: dagSpec});
+  assert.equal(dag.summary.n, 240);
+  await worker.call('q_run', {module: 'ida', spec: {exposure: 'X', outcome: 'Y', assumptionsConfirmed: true}});
+  const replaced = await worker.call('q_run', {module: 'dag', spec: {...dagSpec, algorithm: 'pc'}});
+  assert.equal(replaced.state.results.ida, undefined);
+  await worker.call('q_screen', {config});
+  await worker.call('q_run', {module: 'dag', spec: dagSpec});
+  await worker.call('q_run', {module: 'network', spec: {variables: ['X','M','Y','W'], method: 'ggm', level: 'totals', bootstrap: 0}});
+  assert.equal((await worker.call('q_status')).ida, false);
+  const cs = .456789012345;
+  await worker.call('q_cs', {value: cs, metric: 'expectedInfluence'});
+  await fs.mkdir(output, {recursive: true});
+  const imported = path.join(output, 'returned-results.csv');
+  await fs.writeFile(imported, 'node,effect\nX,0.5\nY,0.2\n');
+  const external = await worker.call('q_import_result', {file: imported});
+  assert.equal(external.results.intervention.n, null);
+  assert.equal(external.results.intervention.revision, null);
+  assert.equal(external.results.intervention.result_records, 2);
+  await worker.call('q_export', {directory: output});
+  const audit = JSON.parse(await fs.readFile(path.join(output, 'analysis-audit.json'), 'utf8'));
+  assert.equal(audit.results.find(r => r.method === 'GGM').cs.expectedInfluence, cs);
+  assert.ok(audit.results.some(r => r.method === 'IDA'), 'invalidated results stay in the archive');
+  console.log(JSON.stringify({ok: true, checks: ['skip resets transformations','new data resets source records','upstream replacement invalidates IDA','external provenance unknown','audit full precision','archive preserved'], report: output}));
+})().catch(e => {console.error(e); process.exitCode = 1;}).finally(() => worker.stop());

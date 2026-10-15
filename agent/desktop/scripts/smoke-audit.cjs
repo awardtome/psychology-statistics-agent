@@ -1,0 +1,37 @@
+const assert=require('node:assert/strict');const fs=require('node:fs/promises');const path=require('node:path');
+const {ComputeWorker}=require('../core.cjs');const {PsychologyWorkspace}=require('../psych-controller.cjs');
+const base=path.resolve(__dirname,'..');const resources=process.argv.includes('--bundled')?path.join(base,'dist/win-unpacked/resources'):base;
+const worker=new ComputeWorker(path.join(resources,'runtime/R'),path.join(resources,'backend'));
+(async()=>{
+ await worker.ready;const desk=new PsychologyWorkspace(worker,()=>{});await desk.operation('demo');
+ await desk.operation('screen',{config:{rules:[{type:'range',columns:['Duration'],min:120}]}});
+ const run=async(module,spec)=>{await desk.operation('enter',{module,accepted:true});await desk.operation('prepare',{module,spec});return desk.operation('run',{module});};
+ const het=await run('heterogeneity',{method:'lpa',variables:['X','M','Y'],maxClasses:2,classes:2});
+ const groups=[].concat(het.sizes);assert.equal(groups.length,2);
+ for(const g of groups){await desk.operation('branch',{mode:'class',class:g.groups});assert.equal(desk.state.data.rows,g.Freq);assert.equal([].concat(desk.state.data.branch_options.groups).length,2);assert.equal(desk.state.data.branch.parent_revision,het.revision);}
+ await desk.operation('branch',{mode:'all'});assert.equal(desk.state.data.rows,237);
+ await run('network',{method:'ggm',variables:['X','M','Y','W'],level:'totals',correlation:'cor',bootstrap:0});
+ const spec={method:'ggmnira',targets:['X'],outcomeScope:'selected_nodes',outcomes:['M','Y'],intensity:2,repetitions:20};
+ await assert.rejects(desk.operation('prepare',{module:'intervention',spec:{...spec,targets:[]}}),/干预变量/);
+ await assert.rejects(desk.operation('prepare',{module:'intervention',spec:{...spec,targets:['NO_SUCH_NODE']}}),/干预变量/);
+ await assert.rejects(desk.operation('prepare',{module:'intervention',spec:{...spec,outcomes:['X']}}),/不能重叠/);
+ await assert.rejects(desk.operation('prepare',{module:'intervention',spec:{...spec,intensity:1.5}}),/正整数/);
+ await desk.tool('prepare_questionnaire_analysis',{module:'intervention',spec});
+ const directory=path.join(base,'test-artifacts/audit-ggmnira-task');
+ await assert.rejects(desk.operation('script',{method:'ggmnira',directory}),/CS/);
+ await desk.operation('cs',{value:.5,metric:'expectedInfluence'});
+ await assert.rejects(desk.operation('script',{method:'ggmnira',directory}),/使用者确认/);
+ await desk.operation('confirm',{ggm:true});await desk.operation('enter',{module:'intervention'});
+ await assert.rejects(desk.operation('script',{method:'ggmnira',directory}),/确认使用/);
+ await desk.operation('enter',{module:'intervention',accepted:true});await desk.operation('script',{method:'ggmnira',directory});
+ const manifest=JSON.parse(await fs.readFile(path.join(directory,'task-manifest.json'),'utf8'));
+ assert.deepEqual([].concat(manifest.specification.targets),['X']);assert.deepEqual(manifest.nodes,['X','M','Y','W']);assert.equal(manifest.specification.intensity,2);assert.equal(manifest.correlation,'cor');assert.match(manifest.cs_origin,/使用者报告/);
+ const nira={method:'nirapost',targets:['B1','B3'],outcomeScope:'selected_nodes',outcomes:['B4','B5'],intensity:1.5,direction:'alleviating',repetitions:2};
+ await run('network',{method:'ising',variables:['B1','B2','B3','B4','B5'],level:'items',bootstrap:0});assert.equal(desk.state.specs.intervention,undefined);
+ await desk.operation('cs',{value:.5,metric:'expectedInfluence'});await desk.operation('prepare',{module:'intervention',spec:nira});
+ const niraDir=path.join(base,'test-artifacts/audit-nirapost-task');await desk.operation('script',{method:'nirapost',directory:niraDir});
+ const niraManifest=JSON.parse(await fs.readFile(path.join(niraDir,'task-manifest.json'),'utf8'));assert.deepEqual(niraManifest.specification.targets,['B1','B3']);assert.equal(niraManifest.nodes.length,5);
+ await desk.operation('screen',{skip:true});assert.equal(desk.state.data.branch_options,null);
+ const report={ok:true,branchSwitching:true,screened:237,explicitTargets:true,invalidTargetsBlocked:true,overlapBlocked:true,integerIntensityChecked:true,dataAndHumanConfirmationEnforced:true,sourceNodesPreserved:true,syntheticCs:'user-reported .5 to test gate, not estimated stability',ggmnira:directory,nirapost:niraDir};
+ await fs.writeFile(path.join(base,'test-artifacts/audit-verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+})().catch(e=>{console.error(e);process.exitCode=1}).finally(()=>worker.stop());

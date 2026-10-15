@@ -1,0 +1,4 @@
+interface:
+  display_name: "元分析助手"
+  short_description: "从编码表检查到模型选择与结果解释，引导完成可复核的元分析"
+  default_prompt: "使用 $meta-analysis-agent 检查我的编码表，带我完成元分析并解释结果。"

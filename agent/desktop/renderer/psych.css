@@ -1,0 +1,82 @@
+body{grid-template-columns:200px minmax(330px,1fr) 390px 270px;min-width:1150px}
+.sidebar{overflow:auto;padding:20px 14px}.brand{font-size:15px;margin-bottom:20px}.brand small{font-size:8px}.brand .mark{min-width:32px;width:32px;height:32px}
+.module-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:16px}.module-nav button{font-size:11px;padding:7px 4px}.module-nav .active,.nav-module.active{background:#d9e9e0;color:#145e4d}
+.nav-module{width:100%;text-align:left;border:0;background:transparent;padding:7px 10px;font-size:12px}
+.side-bottom{padding-top:22px}.chat{padding:0 22px}.workspace-content{padding:18px 20px}
+.home-mode{grid-template-columns:210px 1fr}.home-mode .chat{max-width:1080px;width:100%;margin:0 auto}.home-mode .workspace,.home-mode .research-panel{display:none}
+#home-panel{padding:55px 25px;overflow:auto}.eyebrow{font-size:11px;letter-spacing:.12em;color:#518375}#home-panel h2{font-size:29px;margin:15px 0}.home-description{color:#748079;max-width:650px;font-size:15px}
+.home-card{width:100%;text-align:left;display:grid;grid-template-columns:64px 1fr auto;gap:8px 22px;padding:25px;margin:22px 0;border-radius:13px;background:#f9fbfa}
+.home-card strong{font-size:22px;align-self:center}.home-card p{grid-column:2/4;color:#77837b;margin:0}.home-card>span:last-child{font-size:12px;color:#34705c;align-self:center}.home-icon{grid-row:1/3;display:grid;place-items:center;background:#e3eee7;border-radius:12px;color:#146c5d;font:30px Georgia;height:64px}
+.analysis-card{display:flex;flex-direction:column;width:100%;text-align:left;gap:5px;margin:8px 0;padding:13px}.analysis-card strong{font-size:14px}.analysis-card span{font-size:11px;color:#77837b}
+.button-row{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.button-row button{font-size:11px;padding:7px 9px}
+.json-editor{border:1px solid #d7e1dc;border-radius:6px;background:#f5f8f6;font:11px/1.65 Consolas,'Microsoft YaHei',monospace;padding:10px;min-height:160px;resize:vertical}
+.transition{margin:20px 0;padding:14px;border:1px solid #b6d4c3;border-radius:10px;background:#eef6f1}.transition button{margin:5px 7px 4px 0;font-size:11px}.transition p{font-size:12px}
+#psych-workspace h2{font-size:18px}#psych-workspace h3{font-size:15px;margin-top:25px}#psych-workspace h4{font-size:12px}#psych-workspace p{font-size:12px}
+.psych-plot{width:100%;margin:15px 0}.research-panel{border-left:1px solid #e2e7e8;padding:23px 16px;overflow:auto;background:#f8faf9;height:100vh}.research-panel h2{font-size:15px;margin:0}.research-panel textarea{border:1px solid #d4dfdc;background:white;padding:8px;border-radius:6px;font-size:12px;resize:vertical}
+#research-status{font-size:10px;color:#537c68;margin:14px 0}.research-card{padding:16px 0;border-top:1px solid #dfe7e2}.research-card h4{font-size:12px;margin:5px 0}.research-card small{color:#547a65;font-size:10px}.research-card button{font-size:10px;padding:5px 8px}.research-card details p{font-size:11px}.research-advice{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:1280px){body{grid-template-columns:180px minmax(300px,1fr) 370px 250px}.chat{padding:0 18px}.workspace-content{padding:15px}.home-mode{grid-template-columns:180px 1fr}}
+
+.figure-studio{padding:20px;border-top:1px solid #dce5df}.figure-studio h2{font-size:18px}.figure-studio input,.figure-studio select,.figure-studio textarea{width:100%;padding:8px;border:1px solid #d4dfdc;border-radius:5px;background:white}.figure-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.figure-studio .hint{font-size:12px}.figure-studio details{margin-top:14px}
+
+.workspace{height:100vh;overflow:hidden}.workspace-content{min-height:0}.figure-studio{flex-shrink:0;max-height:70vh;overflow:auto}.figure-studio>summary{font-weight:600;cursor:pointer}
+
+/* Questionnaire pages occupy the main workspace; conversation stays alongside them. */
+body.psych-mode{grid-template-columns:190px minmax(400px,1fr) minmax(290px,350px) 260px}
+.psych-mode .sidebar{grid-column:1;grid-row:1}.psych-mode .workspace{grid-column:2;grid-row:1;border-left:0;border-right:1px solid var(--line)}
+.psych-mode .chat{grid-column:3;grid-row:1;padding:0 18px}.psych-mode .research-panel{grid-column:4;grid-row:1}
+.psych-mode .workspace-head{display:none}.psych-mode .workspace-content{padding:26px 28px}
+.psych-mode #psy-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.psych-mode .analysis-card{margin:0;min-height:100px}.page-description{color:#64766e;font-size:13px;line-height:1.9}
+.analysis-page{padding:20px;border:1px solid #dae5df;background:white;border-radius:12px;margin:18px 0}
+.analysis-page h3{margin:0!important}.analysis-fields{display:grid;gap:5px}.analysis-field textarea{border:1px solid #d4dfdc;border-radius:6px;background:#fafcfb;padding:10px;resize:vertical}
+.analysis-field .hint{display:block}.analysis-page select[multiple]{min-height:120px}.analysis-page .wide{margin-top:18px}
+.attached-data{padding:7px 10px;background:#eaf2ee;border:1px solid #d6e4dc;border-radius:7px;font-size:11px;overflow-wrap:anywhere;margin-bottom:7px}
+.composer-actions .add-file{font-size:22px;line-height:1;width:34px;height:34px;padding:0;border-radius:50%;flex-shrink:0}
+.psych-mode .composer-actions span{font-size:9px}.psych-mode .table-wrap{overflow:auto}.psych-mode .transition{margin:15px 0}
+@media(max-width:1280px){body.psych-mode{grid-template-columns:170px minmax(390px,1fr) 300px 245px}.psych-mode .workspace-content{padding:22px 18px}.psych-mode .chat{padding:0 12px}}
+
+.method-studio{padding:15px;background:#f7faf8;border-radius:9px;margin:16px 0 24px}.method-studio h3{font-size:15px!important}.method-studio h4{font-size:12px;margin:16px 0 7px}
+.planner-pickers{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.planned-edge{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #dde7e1;padding:7px 0;font-size:12px}.planned-edge button{font-size:10px;padding:3px 8px}
+.planning-graph{display:block;width:100%;background:white;border:1px solid #e1e9e4;border-radius:9px;margin:15px 0}.method-cards{display:grid;gap:8px}.method-card{text-align:left;display:grid;gap:4px;padding:12px}.method-card.selected{border:2px solid #438970;background:#edf6ef}.method-card strong{font-size:13px}.method-card span{font-size:11px;color:#6a7d73}
+.method-flow{list-style:none;padding:0;margin:16px 0;display:grid;gap:8px;counter-reset:step}.method-flow li{display:grid;grid-template-columns:26px 1fr;column-gap:8px;padding:10px;border:1px solid #dae6df;border-radius:8px;background:white;counter-increment:step}.method-flow li::before{content:counter(step);grid-row:1/3;align-self:center;text-align:center;background:#e2efe7;color:#2b6d54;border-radius:50%;width:24px;height:24px}.method-flow strong{font-size:12px}.method-flow span{font-size:11px;color:#698074;overflow-wrap:anywhere}
+.method-callout{border-left:3px solid #77a38b;background:#edf4ef;padding:10px;font-size:11px!important;line-height:1.8}.route-card{background:white;border:1px solid #dae4de;border-radius:8px;padding:12px;margin:8px 0}.route-card strong{color:#2b6c54}.route-card p{font-size:11px!important;margin:6px 0}
+
+.result-table-scroll{max-width:100%;overflow:auto} .result-table-scroll table{margin:0} .intervention-fields{display:grid;gap:10px} .intervention-fields label{display:grid;gap:5px}
+
+/* Variable-first path editor. SVG geometry remains editable without a model service. */
+.planner-steps{display:flex;gap:12px;list-style:none;padding:0;flex-wrap:wrap;font-size:12px;color:#7b8780}.planner-steps .current{color:#175d49;font-weight:600}
+.planner-variable-list{max-height:285px;overflow:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;margin:12px 0}
+.planner-variable{display:flex;align-items:center;gap:8px;margin:0;padding:9px 10px;background:white;border:1px solid #e0e8e2;border-radius:7px;overflow-wrap:anywhere}.planner-variable span{flex:1;min-width:0}.planner-variable small{color:#7b8780;font-size:10px}.planner-variable span small{display:block}
+.planner-confirmed{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:#4b7360}.planner-confirmed button{font-size:11px;padding:5px 8px}
+.planner-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}.planner-toolbar button{font-size:11px;padding:7px 10px}.planner-toolbar .selected{background:#dcefe4;border-color:#4c9273;color:#19563f}
+.planner-mode-hint{background:#e8f2ec;border-radius:6px;padding:9px 12px;min-height:44px;color:#3a715a;font-size:12px!important}
+.planner-canvas-scroll{overflow:auto;max-height:480px;background:white;border:1px solid #d6e4dc;border-radius:10px}
+.mediation-canvas{display:block;width:100%;min-width:400px;touch-action:none;background:radial-gradient(#dbe6df 1px,transparent 1px);background-size:18px 18px;user-select:none}
+.canvas-variable{cursor:grab;outline:none}.canvas-variable rect{fill:#f4faf6;stroke:#8fbea3;stroke-width:1.5}.canvas-variable text{font:17px 'Segoe UI','Microsoft YaHei',sans-serif;fill:#275c43;pointer-events:none}.canvas-variable.selected rect,.canvas-variable:focus rect{stroke:#126a50;stroke-width:3;fill:#dbf0e3}
+.canvas-edge{cursor:pointer;outline:none}.edge-line{fill:none;stroke:#287862;stroke-width:2.6;pointer-events:none}.edge-hit{fill:none;stroke:transparent;stroke-width:20}.canvas-edge.selected .edge-line,.canvas-edge:focus .edge-line{stroke:#08583b;stroke-width:4.5}
+.moderator-line{fill:none;stroke:#b16b32;stroke-width:2.5;stroke-dasharray:7 5}.planner-main-effect{fill:none;stroke:#8b9f92;stroke-width:1.7;stroke-dasharray:3 6;opacity:.65;pointer-events:none}
+.planner-legend{font-size:10px!important;color:#6f7d73;line-height:1.8}.planner-inspector{padding:12px;border:1px solid #9ec9b3;border-radius:8px;background:#eff8f2;font-size:12px;margin:12px 0}
+.planner-alert{background:#fff0df;color:#8a5324;padding:10px;border-radius:7px;font-size:12px!important}.planner-alternative{border-top:1px solid #dce6df;padding-top:12px}.planner-effect{padding:8px 12px;margin:8px 0;background:white;border:1px solid #e0e8e2;border-radius:7px}.planner-effect .check{margin:7px 0}.planner-effect input[type=text]{font-size:12px}
+.planner-edge-label{border:0;background:none;text-align:left;padding:0!important;font-size:12px!important}.planned-edge>button:last-child{max-width:45%;overflow-wrap:anywhere}
+.planner-dialog{width:min(1100px,95vw);max-height:94vh;padding:22px}.planner-dialog .planner-canvas-scroll{max-height:52vh}.planner-dialog .mediation-canvas{min-width:640px}.planner-dialog .dialog-head{position:sticky;top:-22px;background:white;z-index:1;padding:12px 0}
+.planner-dialog .planner-toolbar>button:last-child{display:none}
+
+/* Adjustable panels share a fixed navigation column; literature starts collapsed. */
+body.app-layout:not(.home-mode){min-width:1050px;grid-template-columns:190px minmax(340px,1fr) 8px var(--chat-width,360px) 0 0}
+body.app-layout.research-visible:not(.home-mode){grid-template-columns:190px minmax(340px,1fr) 8px var(--chat-width,360px) 8px var(--research-width,280px)}
+.app-layout:not(.home-mode) .sidebar{grid-column:1;grid-row:1;min-width:0}
+.app-layout:not(.home-mode) .workspace{grid-column:2;grid-row:1;min-width:0;border:0}
+.app-layout:not(.home-mode) .chat{grid-column:4;grid-row:1;min-width:0;padding:0 16px}
+.app-layout:not(.home-mode) .research-panel{grid-column:6;grid-row:1;min-width:0;padding-top:60px;overflow-wrap:anywhere}
+.app-layout:not(.home-mode) .chat header{padding-top:54px;align-items:flex-start}.app-layout .chat header .pill{display:none}
+.analysis-splitter{grid-column:3;grid-row:1}.research-splitter{grid-column:5;grid-row:1}
+.panel-splitter{height:100vh;background:#eef2ef;cursor:col-resize;touch-action:none;position:relative;outline:none}
+.panel-splitter::after{content:'';position:absolute;top:45%;left:3px;height:44px;width:2px;background:#9fb4a7;border-radius:2px}
+.panel-splitter:hover,.panel-splitter:focus,.panel-resizing .panel-splitter{background:#c6ded0}.panel-resizing{cursor:col-resize;user-select:none}
+.research-toggle{position:fixed;right:16px;top:12px;z-index:5;font-size:12px;padding:6px 11px;box-shadow:0 2px 9px #20342c10}
+.attachment-picker{position:relative}.attachment-menu{position:absolute;bottom:43px;left:0;width:218px;background:white;box-shadow:0 8px 28px #20342c25;border:1px solid #d4dfdc;border-radius:9px;padding:5px;z-index:6}
+.attachment-menu button{display:block;width:100%;text-align:left;border:0;font-size:12px;padding:10px}.rule-attachment{margin-bottom:7px;background:#fff7e9;border:1px solid #edddbf;padding:7px 10px;border-radius:7px;font-size:11px}.rule-attachment summary{overflow-wrap:anywhere}.rule-attachment button{padding:3px 8px;font-size:10px}.rule-attachment pre{max-height:170px;background:white}
+#settings-dialog{width:620px}#settings-dialog fieldset{border:1px solid #d5e2d9;border-radius:8px;margin:18px 0;padding:10px 16px 14px}#settings-dialog legend{font-size:13px;color:#2e7055;padding:0 6px}
+.checker .avatar{font:12px 'Microsoft YaHei';background:#fff0d5;color:#8b6129}.checker .bubble{border-left:3px solid #c6995a;padding-left:12px;font-size:13px}
+.canvas-moderator{cursor:context-menu;outline:none}.canvas-moderator:focus .moderator-line{stroke-width:4}
+.research-roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:14px 0}.research-role{background:#f2f6f3;border:1px solid #d8e4dc;border-radius:7px;padding:9px;font-size:12px}.research-role strong,.research-role small{display:block}.research-role small{margin-top:4px;color:#687d72}.research-role.working{border-color:#3c977a;background:#e9f7ef}.research-tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid #d5e1d9;padding-bottom:8px;margin:15px 0}.research-tabs button{font-size:11px;padding:6px 8px}.research-tabs button.active{color:#fff;background:#247b62;border-color:#247b62}.research-text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.75;max-height:none;background:#f8faf8;padding:10px}.research-events,#research-status,#research-binding{white-space:pre-wrap}#research-output details{border-bottom:1px solid #e1e8e3;padding:9px 0}#research-output summary{font-size:12px;font-weight:600;cursor:pointer}#research-output h3{font-size:16px;line-height:1.6}.vault-settings{margin-top:20px;padding:12px 0;border-top:1px solid #d5e1d9}.vault-settings summary{font-size:12px;cursor:pointer}#research-panel select,#research-panel textarea{width:100%}#research-export{margin-top:18px}
